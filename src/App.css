@@ -1,0 +1,134 @@
+.App {
+    text-align: center;
+  }
+  
+  Body {
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .buttons-container{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+  }
+  
+  .strikethrough{
+    text-decoration: line-through
+  }
+  
+  .btn-on{
+    background-color: white;
+  }
+  
+  .btn-off{
+    background-color: gray;
+  }
+  
+  .italic{
+    font-style: italic
+  }
+  
+  .public-DraftEditor-content {
+    min-height: 200px;
+    min-width: 400px;
+    display: block;
+    margin-top: 30px;
+    margin-bottom: 0px;
+  }
+  
+  .public-DraftStyleDefault-ltr{
+    text-align: left 
+  }
+  .square-border {
+    border-radius: 0px;
+    border: none;
+  }
+  
+  .newblocktype {
+    font-weight: bold
+  }
+  
+  .editor{
+    padding: 20px;
+  }
+  
+  .black-background {
+    background: white;
+  }
+  
+  .btn-offset-outline {
+    border: 2px white solid;
+    color: white;
+    transition: all 0.5s;
+  }
+  
+  .btn-offset-outline:hover {
+    /*
+    background: #f06;
+    background: linear-gradient(45deg, #fff722, #ff26f9),
+      linear-gradient(142deg, transparent, white),
+      linear-gradient(108deg, red, transparent);
+      */
+    background: white;
+    /*
+    border: 2px black solid;
+    */
+    transition: all 0.5s;
+  }
+  
+  .center-jumbotron {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+  
+  .container {
+    max-width: 600px;
+  }
+  
+  .page-background {
+    background: #f06;
+    background: linear-gradient(45deg, #fff722, #ff26f9),
+      linear-gradient(142deg, transparent, white),
+      linear-gradient(108deg, red, transparent);
+    width: 100%;
+    height: 100%;
+  }
+  
+  .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+  
+  .App-link {
+    color: #61dafb;
+  }
+  
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media only screen and (max-width: 575px) {
+    .center-jumbotron {
+      position: absolute;
+      width: 90%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+  }
+  
