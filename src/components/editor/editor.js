@@ -85,6 +85,10 @@ class PageContainer extends React.Component {
           let match = matchString.exec(convertToRaw(newContentState).blocks[i].text)
 
           if (match) {
+            // Extract text content
+            let textContent = match.groups.text;
+             // currently is set up so match group 1 is always first half of symmetrical selector
+            let tagContent = match[1];
 
             //Get start and end of the match. This is relative to the text block.
             let matchStart = match.index
@@ -104,7 +108,7 @@ class PageContainer extends React.Component {
             newContentState = Modifier.replaceText(
               newContentState,
               selection,
-              match.groups.text
+              textContent
             );
 
             //We create a second selection as this needs to have a different offset because the string is now 
@@ -113,7 +117,7 @@ class PageContainer extends React.Component {
               anchorKey: editorContentRaw.blocks[i].key,
               anchorOffset: matchStart,
               focusKey: editorContentRaw.blocks[i].key,
-              focusOffset: matchEnd - 2 * styleMap[styles[j]].keyCharsCount,
+              focusOffset: matchEnd - 2 * tagContent.length,
               hasFocus: false,
               isBackward: false
             });
