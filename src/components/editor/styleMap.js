@@ -19,7 +19,7 @@ const styleMap = {
     },
     'code': {
         ...codeStyles,
-        regEx: /(`)(?<text>.+?)\1/g,
+        regEx: /((`(?!`))|(`{3}))(?<text>.+?)\1/g,
     },
 };
 
