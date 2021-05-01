@@ -104,7 +104,7 @@ class PageContainer extends React.Component {
             newContentState = Modifier.replaceText(
               newContentState,
               selection,
-              match[1]
+              match.groups.text
             );
 
             //We create a second selection as this needs to have a different offset because the string is now 
