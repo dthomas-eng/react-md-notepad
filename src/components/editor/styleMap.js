@@ -11,7 +11,7 @@ const styleMap = {
     },
     'strikethrough': {
         textDecoration: 'line-through',
-        regEx: /~{2}(?<text>.+?)~{2}/g,
+        regEx: /(~{2})(?<text>.+?)\1/g,
         keyCharsCount: 2
     },
 };
