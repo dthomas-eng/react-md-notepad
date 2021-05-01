@@ -18,15 +18,17 @@ Clone this repo, then
 
 # Functionality:
 
-For now, I'm only focusing on the markdown element. Everything but that has been stripped away.  
+For now, I'm only focusing on the markdown element. Everything but that has been stripped away.
 
-Current markdown options (just for testing, will be changed) are:
+Current markdown options:
 
-    *something* 
+    **bold**, __bold__
     
-    +++something+++
+    *italic*, _italic_
 
-    -something-
+    ~~strikethrough~~
+
+    `code`, ```code```
 
 # Add your own styles:
 
