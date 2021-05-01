@@ -17,8 +17,17 @@ class PageContainer extends React.Component {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(),
+      matchStrings: [],
+      styles: [],
     };
   }
+
+  componentDidMount = () => {
+    this.setState({
+      matchStrings: Object.values(styleMap).map((prop) => prop.regEx),
+      styles: Object.keys(styleMap).map((prop) => prop),
+    });
+  };
 
   //Whevener anything changes, the state gets updated.
   onChange = editorState => {
@@ -41,16 +50,6 @@ class PageContainer extends React.Component {
 
   //This method scans, block by block, for any matching regexes and replaces tag chars with style. 
   renderEverything = () => {
-
-    //Should probably handle the matchstrings array in state so it doesn't need to be pulled in every time this 
-    //function is run, but this is a quick proof of concept. 
-    const matchStrings = []
-    const styles = []
-
-    //Load up arrays from data in styleMap.js
-    Object.values(styleMap).forEach((prop) => matchStrings.push(prop.regEx));
-    Object.keys(styleMap).forEach((prop) => styles.push(prop));
-
     //Get the current state and 'raw' JS version of the content in the editor.
     const contentState = this.state.editorState.getCurrentContent();
     const editorContentRaw = convertToRaw(contentState);
@@ -69,14 +68,14 @@ class PageContainer extends React.Component {
       const blockText = editorContentRaw.blocks[i].text
 
       //Get initial matches:
-      let thereAreMatches = this.thereAreMatchesInThisBlock(blockText, matchStrings)
+      let thereAreMatches = this.thereAreMatchesInThisBlock(blockText, this.state.matchStrings)
 
       while (thereAreMatches) {
 
         //Go through each of the match strings and look for a match. 
-        for (let j = 0; j < matchStrings.length; j++) {
+        for (let j = 0; j < this.state.matchStrings.length; j++) {
 
-          let matchString = matchStrings[j]
+          let matchString = this.state.matchStrings[j]
 
           //Regex objects carry state. Need to reset the state of where to start looking back to index 0.
           matchString.lastIndex = 0
@@ -126,11 +125,11 @@ class PageContainer extends React.Component {
             newContentState = Modifier.applyInlineStyle(
               newContentState,
               removedTagsSelection,
-              styles[j]
+              this.state.styles[j]
             );
 
             //Check against blockText for more matches.
-            thereAreMatches = this.thereAreMatchesInThisBlock(convertToRaw(newContentState).blocks[i].text, matchStrings)
+            thereAreMatches = this.thereAreMatchesInThisBlock(convertToRaw(newContentState).blocks[i].text, this.state.matchStrings)
           }
         }
       }
@@ -183,9 +182,9 @@ class PageContainer extends React.Component {
     let match
     let matchesArray = []
 
-    for (let i = 0; i < matchStrings.length; i++) {
+    for (let i = 0; i < this.state.matchStrings.length; i++) {
 
-      let matchString = matchStrings[i]
+      let matchString = this.state.matchStrings[i]
 
       matchString.lastIndex = 0
 
