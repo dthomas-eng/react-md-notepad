@@ -1,3 +1,9 @@
+const codeStyles = {
+    backgroundColor: '#eaeaea',
+    fontFamily: 'monospace',
+    padding: '0.08em 0.25em',
+};
+
 const styleMap = {
     'bold': {
         fontWeight: 'bold',
@@ -13,6 +19,11 @@ const styleMap = {
         textDecoration: 'line-through',
         regEx: /(~{2})(?<text>.+?)\1/g,
         keyCharsCount: 2
+    },
+    'code': {
+        ...codeStyles,
+        regEx: /(`)(?<text>.+?)\1/g,
+        keyCharsCount: 1
     },
 };
 
