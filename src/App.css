@@ -36,44 +36,13 @@ Body {
   margin-bottom: 0px;
 }
 
-.public-DraftStyleDefault-ltr{
+.public-DraftStyleDefault-ltr {
   text-align: left 
 }
-.square-border {
-  border-radius: 0px;
-  border: none;
-}
 
-.newblocktype {
-  font-weight: bold
-}
-
-.editor{
+.editor {
+  background-color: #fff;
   padding: 20px;
-}
-
-.black-background {
-  background: white;
-}
-
-.btn-offset-outline {
-  border: 2px white solid;
-  color: white;
-  transition: all 0.5s;
-}
-
-.btn-offset-outline:hover {
-  /*
-  background: #f06;
-  background: linear-gradient(45deg, #fff722, #ff26f9),
-    linear-gradient(142deg, transparent, white),
-    linear-gradient(108deg, red, transparent);
-    */
-  background: white;
-  /*
-  border: 2px black solid;
-  */
-  transition: all 0.5s;
 }
 
 .center-jumbotron {
@@ -99,45 +68,8 @@ Body {
 }
 
 .page-background {
-  background: #f06;
-  background: linear-gradient(45deg, #fff722, #ff26f9),
-    linear-gradient(142deg, transparent, white),
-    linear-gradient(108deg, red, transparent);
-  width: 100%;
+  background-color: #f06;
+  background-image: linear-gradient(45deg, #fff722, #ff26f9);
   height: 100%;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media only screen and (max-width: 575px) {
-  .center-jumbotron {
-    position: absolute;
-    width: 90%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  }
+  width: 100%;
 }
