@@ -3,30 +3,24 @@
 }
 
 Body {
-  font-family: "Poppins", sans-serif;
+  background-image: linear-gradient(45deg, #fff722, #ff26f9);
+  height: 100%;
+  width: 100%;
 }
 
-.buttons-container{
+.center-jumbotron {
   position: absolute;
-  top: 0%;
-  left: 0%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.strikethrough{
-  text-decoration: line-through
+.container {
+  max-width: 600px;
 }
 
-.btn-on{
-  background-color: white;
-}
-
-.btn-off{
-  background-color: gray;
-}
-
-.italic{
-  font-style: italic
-}
+/* DraftJS */
 
 .public-DraftEditor-content {
   min-height: 200px;
@@ -45,18 +39,6 @@ Body {
   padding: 20px;
 }
 
-.center-jumbotron {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
-.container {
-  max-width: 600px;
-}
-
 #dropzone {
   border: 1px solid blue;
   position: fixed;
@@ -67,9 +49,16 @@ Body {
   color: transparent;
 }
 
-.page-background {
-  background-color: #f06;
-  background-image: linear-gradient(45deg, #fff722, #ff26f9);
-  height: 100%;
-  width: 100%;
+/* Editor Formatting Styles */
+
+.bold {
+  font-weight: bold
+}
+
+.strikethrough {
+  text-decoration: line-through
+}
+
+.italic {
+  font-style: italic
 }
