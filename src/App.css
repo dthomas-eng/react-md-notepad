@@ -88,6 +88,16 @@ Body {
   max-width: 600px;
 }
 
+#dropzone {
+  border: 1px solid blue;
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: .4;
+  visibility: hidden;
+  color: transparent;
+}
+
 .page-background {
   background: #f06;
   background: linear-gradient(45deg, #fff722, #ff26f9),
