@@ -4,7 +4,6 @@
 
 - Add all standard markdown options. 
 - Click on block -> 'un-render' markdown. 
-- Figure out how to drag, drop, and resize images/media.
 - Reassess if this makes sense as an editor for a notes app.
 
 This is an in-progress markdown editor based on Draftjs. 
@@ -18,7 +17,9 @@ Clone this repo, then
 
 # Functionality:
 
-For now, I'm only focusing on the markdown element. Everything but that has been stripped away.
+Markdown and drag and drop functionality are currently being developed side by side. 
+
+Drag and Drop supports only images (for now).
 
 Current markdown options:
 
