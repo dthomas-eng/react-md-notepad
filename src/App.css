@@ -41,6 +41,13 @@ Body {
   padding: 20px;
 }
 
+/* I dislike this selector. Is there a way to add a class to inserted images? */
+.editor figure img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
 #dropzone {
   border: 1px solid blue;
   position: fixed;
