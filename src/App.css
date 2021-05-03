@@ -43,18 +43,17 @@ Body {
 }
 
 .editor {
-  background-color: #fff;
   overflow: auto;
   padding: 20px;
-  background:
-    linear-gradient(#eeeeee 33%, rgba(238,238,238, 0)),
-    linear-gradient(rgba(238,238,238, 0), #eeeeee 66%) 0 100%,
+  background-color: #ffffff;
+/*   background: 
+    linear-gradient(#ffffff 33%, rgba(255,255,255, 0)),
+    linear-gradient(rgba(255,255,255, 0), #ffffff 66%) 0 100%,
     radial-gradient(farthest-side at 50% 0, rgba(34,34,34, 0.5), rgba(0,0,0,0)),
     radial-gradient(farthest-side at 50% 100%, rgba(34,34,34, 0.5), rgba(0,0,0,0)) 0 100%;
-  background-color: #eeeeee;
   background-repeat: no-repeat;
   background-attachment: local, local, scroll, scroll;
-  background-size: 100% 30px, 100% 30px, 100% 10px, 100% 10px;
+  background-size: 100% 30px, 100% 30px, 100% 10px, 100% 10px; */
 }
 
 /* I dislike this selector. Is there a way to add a class to inserted images? */
