@@ -11,7 +11,7 @@ const App = () => {
           <Router>
             <Switch>
               <Route exact path='/'>
-                <div className='center-jumbotron text-center square-border black-background'>
+                <div className='editor__container'>
                   <TextEditor />
                 </div>
               </Route>
