@@ -7,18 +7,11 @@ import TextEditor from "./components/editor/editor";
 const App = () => {
   return (
       <Fragment>
-        <Helmet>
-          <style>
-            {
-              "body { background: #f06; background: linear-gradient(45deg, #fff722, #ff26f9); height: 100vh }"
-            }
-          </style>
-        </Helmet>
         <div className='container'>
           <Router>
             <Switch>
               <Route exact path='/'>
-                <div className='center-jumbotron text-center square-border black-background'>
+                <div className='editor__container'>
                   <TextEditor />
                 </div>
               </Route>

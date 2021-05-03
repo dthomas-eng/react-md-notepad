@@ -337,7 +337,7 @@ class PageContainer extends React.Component {
   render() {
     return (
       <Fragment >
-        <textarea ref={this.dropRef} id='dropzone' style={{ border: '1px solid blue', position: 'fixed', top: '0', left: '0', opacity: '.4', visibility: 'hidden', color: 'transparent' }} />
+        <textarea ref={this.dropRef} id='dropzone' />
         <div className='editor' id='editor' onKeyDown={this.handleKeyDown}>
           <Editor
             editorState={this.state.editorState}
