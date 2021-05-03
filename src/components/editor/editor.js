@@ -328,7 +328,7 @@ class PageContainer extends React.Component {
     ImageBlock = props => {
       return (
         <div id={'imageLoc'}>
-          <img src={props.blockProps.imgsrc} id={'imageBlock'} />
+          <img src={props.blockProps.imgsrc} id={'imageBlock'} className="image-block" />
         </div>
       );
     };

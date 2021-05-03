@@ -57,7 +57,7 @@ Body {
 }
 
 /* I dislike this selector. Is there a way to add a class to inserted images? */
-.editor figure img {
+.image-block {
   display: block;
   height: auto;
   max-width: 100%;
