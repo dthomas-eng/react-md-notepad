@@ -34,9 +34,9 @@
 /* Fira Code */
 @font-face {
   font-family: 'Fira Code';
-  src: local('FiraCode-Light'),
-       url('./assets/fonts/FiraCode-Light.woff2'),
-       url('./assets/fonts/FiraCode-Light.woff');
+  src: local('FiraCode-Regular'),
+       url('./assets/fonts/FiraCode-Regular.woff2'),
+       url('./assets/fonts/FiraCode-Regular.woff');
   font-style: italic;
   font-weight: bold;
 }
