@@ -56,7 +56,7 @@ class PageContainer extends React.Component {
   handleKeyDown = async (e) => {
     e.persist()
     if (e.key === 'Enter') {
-      //this.renderEverything()
+      await this.renderInlineStyles()
       await this.renderBlockStyles()
       this.insertNewUnstyledBlock()
     }
@@ -215,7 +215,7 @@ class PageContainer extends React.Component {
   /** Inline Markdown Parsing Methods **/
 
   //This method scans, block by block, for any matching regexes and replaces tag chars with style. 
-  renderEverything = () => {
+  renderInlineStyles = async () => {
     //Get the current state and 'raw' JS version of the content in the editor.
     const contentState = this.state.editorState.getCurrentContent();
     const editorContentRaw = convertToRaw(contentState);
@@ -316,12 +316,13 @@ class PageContainer extends React.Component {
           const textWithEntity = Modifier.splitBlock(currentContent, preEditSelection);
 
           this.setState({
-            editorState: EditorState.push(editorState, textWithEntity, "split-block")
+            editorState: EditorState.push(editorState, textWithEntity, "split-block"),
           }, () => {
 
             //Set the style back to none. 
             this.clearStyles()
 
+            return 
           });
         })
       }

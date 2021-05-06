@@ -100,5 +100,8 @@ Body {
   /* block stylings  */
 
   .header1 {
-    color: #999;
+    background-color: #ff26f9;
+    font-weight: bolder;
+    padding: 20px;
+    font-size: larger;
   }
