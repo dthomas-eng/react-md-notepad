@@ -338,14 +338,23 @@ class PageContainer extends React.Component {
     };
 
   surroundText = (ends) => {
+    const editorState = this.state.editorState;
     // get selection
-    const selectionState = this.state.editorState.getSelection();
+    const selectionState = editorState.getSelection();
+    const anchorKey = selectionState.getAnchorKey();
+    let currentContent = editorState.getCurrentContent();
+    const currentContentBlock = currentContent.getBlockForKey(anchorKey);
     const start = selectionState.getStartOffset();
     const end = selectionState.getEndOffset();
-    // at end of selection
-      // add ends
-    // at beginning of selection
-      // add ends
+    const selectedText = currentContentBlock.getText().slice(start, end);
+    currentContent = Modifier.replaceText(
+      currentContent,
+      selectionState,
+      `${ends}${selectedText}${ends}`
+    );
+    this.setState({
+      editorState: EditorState.push(editorState, currentContent, 'insert-characters')
+    });
   };
 
 
