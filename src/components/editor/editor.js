@@ -48,6 +48,8 @@ class PageContainer extends React.Component {
   //A ref that points to the editor area to make it droppable. Could (and probably should) just select this id.
   dropRef = React.createRef()
 
+    /** Handler Methods **/
+
   //Two key presses are listed for: 
   //Enter - when enter is pressed, the whole doc is scanned for our regexes and rendered.
   //Space - some styles we want to cancel after a space. That happens here too. 
@@ -62,8 +64,6 @@ class PageContainer extends React.Component {
       this.clearStyles()
     }
   }
-
-  /** Handler Methods **/
 
   //This method turns a tab into 4 spaces. 
   handleTab = (e) => {
