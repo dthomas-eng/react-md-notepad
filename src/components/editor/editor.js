@@ -30,7 +30,7 @@ class PageContainer extends React.Component {
       styles: Object.keys(styleMap).map((prop) => prop),
     });
 
-    //Add listeners for dragging over and dropping in the editor area. 
+    //Add listeners for dragging over and dropping in the editor area.
     let div = this.dropRef.current
     let editorDiv = document.getElementById('editor')
     editorDiv.addEventListener('dragover', this.handleDrag)
@@ -47,9 +47,9 @@ class PageContainer extends React.Component {
   //A ref that points to the editor area to make it droppable. Could (and probably should) just select this id.
   dropRef = React.createRef()
 
-  //Two key presses are listed for: 
+  //Two key presses are listed for:
   //Enter - when enter is pressed, the whole doc is scanned for our regexes and rendered.
-  //Space - some styles we want to cancel after a space. That happens here too. 
+  //Space - some styles we want to cancel after a space. That happens here too.
   handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       this.renderEverything()
@@ -57,11 +57,15 @@ class PageContainer extends React.Component {
     if (e.keyCode === 32) {
       this.clearStyles()
     }
+    // Styling
+    if (e.ctrlKey === true && e.code === 'KeyB') {
+      this,surroundText('**'); // Bold
+    }
   }
 
   /** Handler Methods **/
 
-  //This method turns a tab into 4 spaces. 
+  //This method turns a tab into 4 spaces.
   handleTab = (e) => {
     e.preventDefault();
 
@@ -92,7 +96,7 @@ class PageContainer extends React.Component {
     e.preventDefault()
     e.stopPropagation()
 
-    //Only allow 1 file to be dropped. 
+    //Only allow 1 file to be dropped.
     if (e.dataTransfer.files && e.dataTransfer.files.length === 1) {
 
       //And that file must be an image. Can detect different file types and treat accordingly.
@@ -107,7 +111,7 @@ class PageContainer extends React.Component {
 
       reader.onloadend = function () {
         sendToInsertBlock(reader.result)
-        //Need to hide the textArea that shows up when you hover to drop. It's done it's job at this point. 
+        //Need to hide the textArea that shows up when you hover to drop. It's done it's job at this point.
         document.getElementById('dropzone').style.visibility = 'hidden'
       }
 
@@ -118,7 +122,7 @@ class PageContainer extends React.Component {
 
   /** Markdown Parsing Methods **/
 
-  //This method scans, block by block, for any matching regexes and replaces tag chars with style. 
+  //This method scans, block by block, for any matching regexes and replaces tag chars with style.
   renderEverything = () => {
     //Get the current state and 'raw' JS version of the content in the editor.
     const contentState = this.state.editorState.getCurrentContent();
@@ -128,13 +132,13 @@ class PageContainer extends React.Component {
     //Take a snapshot of current cursor location, we are about to fuck it up.
     const preEditSelection = currentState.getSelection();
 
-    //This is the new state passed at the end into setstate. We operate on it a bunch then pass it back. 
+    //This is the new state passed at the end into setstate. We operate on it a bunch then pass it back.
     let newContentState = this.state.editorState.getCurrentContent()
 
     //We go through each block.
     for (let i = 0; i < editorContentRaw.blocks.length; i++) {
 
-      //Get the block text and define what the match pattern should be: 
+      //Get the block text and define what the match pattern should be:
       const blockText = editorContentRaw.blocks[i].text
 
       //Get initial matches:
@@ -142,7 +146,7 @@ class PageContainer extends React.Component {
 
       while (thereAreMatches) {
 
-        //Go through each of the match strings and look for a match. 
+        //Go through each of the match strings and look for a match.
         for (let j = 0; j < this.state.matchStrings.length; j++) {
 
           let matchString = this.state.matchStrings[j]
@@ -163,7 +167,7 @@ class PageContainer extends React.Component {
             let matchStart = match.index
             let matchEnd = match.index + match[0].length
 
-            //Create a selection of the matching text. 
+            //Create a selection of the matching text.
             let selection = new SelectionState({
               anchorKey: editorContentRaw.blocks[i].key,
               anchorOffset: matchStart,
@@ -173,15 +177,15 @@ class PageContainer extends React.Component {
               isBackward: false
             });
 
-            //This just generates a new state with our selected text. 
+            //This just generates a new state with our selected text.
             newContentState = Modifier.replaceText(
               newContentState,
               selection,
               textContent
             );
 
-            //We create a second selection as this needs to have a different offset because the string is now 
-            //missing the tags. We need to account for that. 
+            //We create a second selection as this needs to have a different offset because the string is now
+            //missing the tags. We need to account for that.
             let removedTagsSelection = new SelectionState({
               anchorKey: editorContentRaw.blocks[i].key,
               anchorOffset: matchStart,
@@ -214,7 +218,7 @@ class PageContainer extends React.Component {
           editorState: EditorState.push(currentState, newContentState, 'change-inline-style')
         }, () => {
 
-          //Make new block where the cursor was before the replacement was made. 
+          //Make new block where the cursor was before the replacement was made.
           const editorState = this.state.editorState;
           const currentContent = editorState.getCurrentContent();
           const textWithEntity = Modifier.splitBlock(currentContent, preEditSelection);
@@ -223,7 +227,7 @@ class PageContainer extends React.Component {
             editorState: EditorState.push(editorState, textWithEntity, "split-block")
           }, () => {
 
-            //Set the style back to none. 
+            //Set the style back to none.
             this.clearStyles()
 
           });
@@ -233,7 +237,7 @@ class PageContainer extends React.Component {
     }
   }
 
-  //Reset Styles back to none. Have to set them one at a time. Really annoying thing about draftjs. 
+  //Reset Styles back to none. Have to set them one at a time. Really annoying thing about draftjs.
   clearStyles = () => {
 
     Object.keys(styleMap).forEach((style) => {
@@ -272,7 +276,7 @@ class PageContainer extends React.Component {
 
   /** Media Drag/Drop Methods **/
 
-  //Inserts a block when an image is dragged into the drag and drop zone. 
+  //Inserts a block when an image is dragged into the drag and drop zone.
   insertBlock = (source) => {
 
     const { editorState } = this.state;
@@ -300,7 +304,7 @@ class PageContainer extends React.Component {
     })
   }
 
-  //This is the method that renders each block. When we define custom blocks (like the ImageBlock below), 
+  //This is the method that renders each block. When we define custom blocks (like the ImageBlock below),
   //we can define what data goes where. In this case, we take the data from the contentstate (which is the imgsrc)
   //and put it into the props of the custom ImageBlock.
   //Could detect type of media (pdf, audio, video, ect...) and apply the same routine displaying them however we want.
@@ -309,7 +313,7 @@ class PageContainer extends React.Component {
 
     if (type === "atomic") {
 
-      //get the data from that block: 
+      //get the data from that block:
       const { editorState } = this.state;
       const contentState = editorState.getCurrentContent();
       const data = contentState.getEntity(contentBlock.getEntityAt(0)).getData();
@@ -324,7 +328,7 @@ class PageContainer extends React.Component {
     }
   };
 
-    //The actual definition of the custom block. 
+    //The actual definition of the custom block.
     ImageBlock = props => {
       return (
         <div id={'imageLoc'}>
@@ -333,7 +337,15 @@ class PageContainer extends React.Component {
       );
     };
 
-    
+  surroundText = ((ends) => {
+    // get selection
+    // at end of selection
+      // add ends
+    // at beginning of selection
+      // add ends
+  });
+
+
   render() {
     return (
       <Fragment >
