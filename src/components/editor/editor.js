@@ -21,6 +21,7 @@ class PageContainer extends React.Component {
       editorState: EditorState.createEmpty(),
       matchStrings: [],
       styles: [],
+      preEditSelection: null
     };
   }
 
@@ -50,9 +51,12 @@ class PageContainer extends React.Component {
   //Two key presses are listed for: 
   //Enter - when enter is pressed, the whole doc is scanned for our regexes and rendered.
   //Space - some styles we want to cancel after a space. That happens here too. 
-  handleKeyDown = (e) => {
+  handleKeyDown = async (e) => {
+    e.persist()
     if (e.key === 'Enter') {
-      this.renderEverything()
+      //this.renderEverything()
+      await this.renderBlockStyles()
+      this.insertNewUnstyledBlock()  
     }
     if (e.keyCode === 32) {
       this.clearStyles()
@@ -116,7 +120,99 @@ class PageContainer extends React.Component {
     }
   }
 
-  /** Markdown Parsing Methods **/
+  /** Block Markdown Parsing Methods */
+
+      renderBlockStyles = async () => {
+
+        let headerMatch = /^\#/
+    
+        //Go through blocks and see if any of them start with a #.
+    
+        //Get the current state and 'raw' JS version of the content in the editor.
+        let currentState = this.state.editorState;
+    
+        //Take a snapshot of current cursor location, we are about to fuck it up.
+        const preEditSelection = currentState.getSelection();
+    
+        //This is the new state passed at the end into setstate. We operate on it a bunch then pass it back. 
+        let newContentState = this.state.editorState.getCurrentContent()
+    
+        newContentState.blockMap.forEach((block) => {
+    
+          //Create a selection of the matching text. 
+          let selection = new SelectionState({
+            anchorKey: block.key,
+            anchorOffset: 0,
+            focusKey: block.key,
+            focusOffset: 1,
+            hasFocus: false,
+            isBackward: false
+          });
+    
+          const match = headerMatch.exec(block.text)
+    
+          if (match) {
+    
+            newContentState = Modifier.replaceText(
+              newContentState,
+              selection,
+              ''
+            );
+    
+            //For each block that matches, set block type to that matching the key. 
+            newContentState = Modifier.setBlockType(
+              newContentState,
+              selection,
+              'header1'
+            );
+    
+          }
+    
+          this.setState({
+            editorState: EditorState.push(currentState, newContentState, 'insert-characters'),
+            preEditSelection
+          }, () => {
+    
+            return
+          })
+    
+        })
+      }
+  
+    insertNewUnstyledBlock = async () => {
+  
+      //Make new block where the cursor was before the replacement was made. 
+      let currentContent = this.state.editorState.getCurrentContent();
+      const contentWithNewBlock = Modifier.splitBlock(currentContent, this.state.preEditSelection);
+      
+      this.setState({
+        editorState: EditorState.push(this.state.editorState, contentWithNewBlock, "split-block")
+      }, () => {
+  
+        //Set style for that block to unstyled - otherwise, last style will be carried over.
+        currentContent = this.state.editorState.getCurrentContent();
+        const selectionForChange = currentContent.getSelectionAfter()
+        const unstyledBlockContent = Modifier.setBlockType(currentContent, selectionForChange, 'unstyled')
+  
+        this.setState({
+          editorState: EditorState.push(this.state.editorState, unstyledBlockContent, "change-block-type")
+        })
+      })
+    }
+  
+     //This function applies corresponding css class to each block by type. 
+    //The css classes for this are found at the bottom of App.css.
+    blockStyleFn = (contentBlock) => {
+      const type = contentBlock.getType();
+      if (type === 'block-bold') {
+        return 'block-bold';
+      }
+      if (type === 'header1') {
+        return 'header1';
+      }
+    }
+
+  /** Inline Markdown Parsing Methods **/
 
   //This method scans, block by block, for any matching regexes and replaces tag chars with style. 
   renderEverything = () => {
@@ -345,7 +441,7 @@ class PageContainer extends React.Component {
             onChange={this.onChange}
             onTab={this.handleTab}
             blockRendererFn={this.blockRenderer}
-            blockStyleFn={this.myBlockStyleFn}
+            blockStyleFn={this.blockStyleFn}
             customStyleMap={styleMap}
           />
         </div>

@@ -96,3 +96,9 @@ Body {
 *::-webkit-scrollbar-thumb {
   background-color: gray;
 }
+
+  /* block stylings  */
+
+  .header1 {
+    color: #999;
+  }
