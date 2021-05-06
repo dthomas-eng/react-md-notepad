@@ -58,9 +58,21 @@ class PageContainer extends React.Component {
       this.clearStyles()
     }
     // Styling
-    if (e.ctrlKey === true && e.key === 'b') {
+    if (e.metaKey === true && e.key === 'b') {
       e.preventDefault();
       this.surroundText('**'); // Bold
+    }
+    if (e.metaKey === true && e.key === 'i') {
+      e.preventDefault();
+      this.surroundText('*'); // italic
+    }
+    if (e.metaKey === true && e.shiftKey === true && e.key === 'x') {
+      e.preventDefault();
+      this.surroundText('~~'); // strikethrough
+    }
+    if (e.metaKey === true && e.ctrlKey === true && e.key === 'c') {
+      e.preventDefault();
+      this.surroundText('`'); // code
     }
   }
 
@@ -341,7 +353,7 @@ class PageContainer extends React.Component {
   surroundText = (ends) => {
     const editorState = this.state.editorState;
     // get selection
-    const selectionState = editorState.getSelection();
+    let selectionState = editorState.getSelection();
     const anchorKey = selectionState.getAnchorKey();
     let currentContent = editorState.getCurrentContent();
     const currentContentBlock = currentContent.getBlockForKey(anchorKey);
@@ -353,6 +365,7 @@ class PageContainer extends React.Component {
       selectionState,
       `${ends}${selectedText}${ends}`
     );
+
     this.setState({
       editorState: EditorState.push(editorState, currentContent, 'insert-characters')
     });
