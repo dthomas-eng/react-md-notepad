@@ -337,13 +337,16 @@ class PageContainer extends React.Component {
       );
     };
 
-  surroundText = ((ends) => {
+  surroundText = (ends) => {
     // get selection
+    const selectionState = this.state.editorState.getSelection();
+    const start = selectionState.getStartOffset();
+    const end = selectionState.getEndOffset();
     // at end of selection
       // add ends
     // at beginning of selection
       // add ends
-  });
+  };
 
 
   render() {
