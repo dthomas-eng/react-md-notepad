@@ -59,6 +59,7 @@ class PageContainer extends React.Component {
     }
     // Styling
     if (e.ctrlKey === true && e.key === 'b') {
+      e.preventDefault();
       this.surroundText('**'); // Bold
     }
   }
