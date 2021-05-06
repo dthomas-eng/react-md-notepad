@@ -58,8 +58,8 @@ class PageContainer extends React.Component {
       this.clearStyles()
     }
     // Styling
-    if (e.ctrlKey === true && e.code === 'KeyB') {
-      this,surroundText('**'); // Bold
+    if (e.ctrlKey === true && e.key === 'b') {
+      this.surroundText('**'); // Bold
     }
   }
 
