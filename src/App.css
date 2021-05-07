@@ -98,9 +98,17 @@ Body {
 }
 
   /* block stylings  */
+  /* define the regex matches for these in blockStyles.js */
 
-  .header1 {
+  .veryGross {
     background-color: #ff26f9;
+    font-weight: bolder;
+    padding: 20px;
+    font-size: larger;
+  }
+
+  .superGross {
+    background-color: #0012af;
     font-weight: bolder;
     padding: 20px;
     font-size: larger;

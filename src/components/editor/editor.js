@@ -5,12 +5,13 @@ import {
   convertToRaw,
   RichUtils,
   SelectionState,
-  AtomicBlockUtils,
-  EditorBlock
+  AtomicBlockUtils
 } from "draft-js";
 import Editor from "draft-js-plugins-editor";
 
 import styleMap from "./styleMap"
+import blockStyles from "./blockStyles"
+
 
 class PageContainer extends React.Component {
 
@@ -19,16 +20,22 @@ class PageContainer extends React.Component {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(),
-      matchStrings: [],
-      styles: [],
+      inlineMatchStrings: [],
+      inlineStyles: [],
+      blockMatchStrings: [],
+      blockStyles: [],
+      blockMatchLength: [],
       preEditSelection: null
     };
   }
 
   componentDidMount = () => {
     this.setState({
-      matchStrings: Object.values(styleMap).map((prop) => prop.regEx),
-      styles: Object.keys(styleMap).map((prop) => prop),
+      inlineMatchStrings: Object.values(styleMap).map((prop) => prop.regEx),
+      inlineStyles: Object.keys(styleMap).map((prop) => prop),
+      blockMatchStrings: Object.values(blockStyles).map((prop) => prop.regEx),
+      blockStyles: Object.keys(blockStyles).map((prop) => prop),
+      blockMatchLength: Object.values(blockStyles).map((prop) => prop.length)
     });
 
     //Add listeners for dragging over and dropping in the editor area. 
@@ -52,7 +59,7 @@ class PageContainer extends React.Component {
 
   //Two key presses are listed for: 
   //Enter - when enter is pressed, the whole doc is scanned for our regexes and rendered.
-  //Space - some styles we want to cancel after a space. That happens here too. 
+  //Space - cancels the inline style.
   handleKeyDown = async (e) => {
     e.persist()
     if (e.key === 'Enter') {
@@ -126,10 +133,6 @@ class PageContainer extends React.Component {
 
   renderBlockStyles = async () => {
 
-    let headerMatch = /^\#/
-
-    //Go through blocks and see if any of them start with a #.
-
     //Get the current state and 'raw' JS version of the content in the editor.
     let currentState = this.state.editorState;
 
@@ -141,34 +144,37 @@ class PageContainer extends React.Component {
 
     newContentState.blockMap.forEach((block) => {
 
-      //Create a selection of the matching text. 
-      let selection = new SelectionState({
-        anchorKey: block.key,
-        anchorOffset: 0,
-        focusKey: block.key,
-        focusOffset: 1,
-        hasFocus: false,
-        isBackward: false
-      });
+      this.state.blockMatchStrings.forEach((matchString, i) => {
 
-      const match = headerMatch.exec(block.text)
+        if (matchString.exec(block.text)) {
 
-      if (match) {
+          console.log(matchString)
+          console.log(this.state.blockStyles[i])
+          //Create a selection of the matching text. 
+          let selection = new SelectionState({
+            anchorKey: block.key,
+            anchorOffset: 0,
+            focusKey: block.key,
+            focusOffset: this.state.blockMatchLength[i], //Is there a better way to do this? 
+            hasFocus: false,
+            isBackward: false
+          });
 
-        newContentState = Modifier.replaceText(
-          newContentState,
-          selection,
-          ''
-        );
+          newContentState = Modifier.replaceText(
+            newContentState,
+            selection,
+            ''
+          );
 
-        //For each block that matches, set block type to that matching the key. 
-        newContentState = Modifier.setBlockType(
-          newContentState,
-          selection,
-          'header1'
-        );
+          //For each block that matches, set block type to that matching the key. 
+          newContentState = Modifier.setBlockType(
+            newContentState,
+            selection,
+            this.state.blockStyles[i]
+          );
 
-      }
+        }
+      })
 
       this.setState({
         editorState: EditorState.push(currentState, newContentState, 'insert-characters'),
@@ -207,13 +213,7 @@ class PageContainer extends React.Component {
   //This function applies corresponding css class to each block by type. 
   //The css classes for this are found at the bottom of App.css.
   blockStyleFn = (contentBlock) => {
-    const type = contentBlock.getType();
-    if (type === 'block-bold') {
-      return 'block-bold';
-    }
-    if (type === 'header1') {
-      return 'header1';
-    }
+    return contentBlock.getType();
   }
 
   /** Inline Markdown Parsing Methods **/
@@ -238,14 +238,14 @@ class PageContainer extends React.Component {
       const blockText = editorContentRaw.blocks[i].text
 
       //Get initial matches:
-      let thereAreMatches = this.thereAreMatchesInThisBlock(blockText, this.state.matchStrings)
+      let thereAreMatches = this.thereAreMatchesInThisBlock(blockText, this.state.inlineMatchStrings)
 
       while (thereAreMatches) {
 
         //Go through each of the match strings and look for a match. 
-        for (let j = 0; j < this.state.matchStrings.length; j++) {
+        for (let j = 0; j < this.state.inlineMatchStrings.length; j++) {
 
-          let matchString = this.state.matchStrings[j]
+          let matchString = this.state.inlineMatchStrings[j]
 
           //Regex objects carry state. Need to reset the state of where to start looking back to index 0.
           matchString.lastIndex = 0
@@ -295,11 +295,11 @@ class PageContainer extends React.Component {
             newContentState = Modifier.applyInlineStyle(
               newContentState,
               removedTagsSelection,
-              this.state.styles[j]
+              this.state.inlineStyles[j]
             );
 
             //Check against blockText for more matches.
-            thereAreMatches = this.thereAreMatchesInThisBlock(convertToRaw(newContentState).blocks[i].text, this.state.matchStrings)
+            thereAreMatches = this.thereAreMatchesInThisBlock(convertToRaw(newContentState).blocks[i].text, this.state.inlineMatchStrings)
           }
         }
       }
@@ -319,21 +319,6 @@ class PageContainer extends React.Component {
             return
           })
 
-
-          // //Make new block where the cursor was before the replacement was made. 
-          // const editorState = this.state.editorState;
-          // const currentContent = editorState.getCurrentContent();
-          // const textWithEntity = Modifier.splitBlock(currentContent, preEditSelection);
-
-          // this.setState({
-          //   editorState: EditorState.push(editorState, textWithEntity, "split-block"),
-          // }, () => {
-
-          //   //Set the style back to none. 
-          //   this.clearStyles()
-
-          //   return
-          // });
         })
       }
       )
@@ -343,7 +328,7 @@ class PageContainer extends React.Component {
   //Reset Styles back to none. Have to set them one at a time. Really annoying thing about draftjs. 
   clearStyles = () => {
 
-    Object.keys(styleMap).forEach((style) => {
+    this.state.inlineStyles.forEach((style) => {
       if (this.state.editorState.getCurrentInlineStyle().has(style)) {
         this.onChange(
           RichUtils.toggleInlineStyle(this.state.editorState, style)
@@ -353,15 +338,15 @@ class PageContainer extends React.Component {
 
   }
 
-  //Goes through list of matchStrings and sees if anything is left that matches (hasn't been rendered)
-  thereAreMatchesInThisBlock = (blockText, matchStrings) => {
+  //Goes through list of inlineMatchStrings and sees if anything is left that matches (hasn't been rendered)
+  thereAreMatchesInThisBlock = (blockText, inlineMatchStrings) => {
 
     let match
     let matchesArray = []
 
-    for (let i = 0; i < this.state.matchStrings.length; i++) {
+    for (let i = 0; i < this.state.inlineMatchStrings.length; i++) {
 
-      let matchString = this.state.matchStrings[i]
+      let matchString = this.state.inlineMatchStrings[i]
 
       matchString.lastIndex = 0
 
