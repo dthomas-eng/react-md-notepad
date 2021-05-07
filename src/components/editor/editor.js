@@ -58,7 +58,9 @@ class PageContainer extends React.Component {
     if (e.key === 'Enter') {
       await this.renderInlineStyles()
       await this.renderBlockStyles()
-      this.insertNewUnstyledBlock()
+      await this.insertNewUnstyledBlock()
+      this.clearStyles()
+
     }
     if (e.keyCode === 32) {
       this.clearStyles()
@@ -196,6 +198,8 @@ class PageContainer extends React.Component {
 
       this.setState({
         editorState: EditorState.push(this.state.editorState, unstyledBlockContent, "change-block-type")
+      }, () => {
+        return
       })
     })
   }
@@ -310,20 +314,26 @@ class PageContainer extends React.Component {
           editorState: EditorState.push(currentState, newContentState, 'change-inline-style')
         }, () => {
 
-          //Make new block where the cursor was before the replacement was made. 
-          const editorState = this.state.editorState;
-          const currentContent = editorState.getCurrentContent();
-          const textWithEntity = Modifier.splitBlock(currentContent, preEditSelection);
-
-          this.setState({
-            editorState: EditorState.push(editorState, textWithEntity, "split-block"),
-          }, () => {
-
+          this.setState({ editorState: EditorState.forceSelection(this.state.editorState, preEditSelection) }, () => {
             //Set the style back to none. 
-            this.clearStyles()
+            return
+          })
 
-            return 
-          });
+
+          // //Make new block where the cursor was before the replacement was made. 
+          // const editorState = this.state.editorState;
+          // const currentContent = editorState.getCurrentContent();
+          // const textWithEntity = Modifier.splitBlock(currentContent, preEditSelection);
+
+          // this.setState({
+          //   editorState: EditorState.push(editorState, textWithEntity, "split-block"),
+          // }, () => {
+
+          //   //Set the style back to none. 
+          //   this.clearStyles()
+
+          //   return
+          // });
         })
       }
       )
