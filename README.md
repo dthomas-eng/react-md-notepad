@@ -23,20 +23,37 @@ Drag and Drop supports only images (for now).
 
 Current markdown options:
 
-    **bold**, __bold__
-    
-    *italic*, _italic_
+    Inline: 
 
-    ~~strikethrough~~
+        **bold**, __bold__
+        
+        *italic*, _italic_
 
-    `code`, ```code```
+        ~~strikethrough~~
+
+        `code`, ```code```
+
+    Block: 
+
+        # heading 
+
+        <h2> Another heading
 
 # Add your own styles:
 
-Go to 
+For inline styles, go to 
 
     src/components/editor/styleMap.js
 
 Add a style. It should be immediately useable whenever react is refreshed. 
+
+For block styles, go to: 
+
+    src/components/editor/blockStyles.js
+
+And add a regex and length to a style class. 
+
+Then, in App.css, define that style using the class name from blockStyles.js
+
 
 
