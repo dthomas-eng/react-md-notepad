@@ -58,19 +58,19 @@ class PageContainer extends React.Component {
       this.clearStyles()
     }
     // Styling
-    if (e.metaKey === true && e.key === 'b') {
+    if (e.ctrlKey === true && e.key === 'b') {
       e.preventDefault();
       this.surroundText('**'); // Bold
     }
-    if (e.metaKey === true && e.key === 'i') {
+    if (e.ctrlKey === true && e.key === 'i') {
       e.preventDefault();
       this.surroundText('*'); // italic
     }
-    if (e.metaKey === true && e.shiftKey === true && e.key === 'x') {
+    if (e.ctrlKey === true && e.shiftKey === true && e.key === 'X') {
       e.preventDefault();
       this.surroundText('~~'); // strikethrough
     }
-    if (e.metaKey === true && e.ctrlKey === true && e.key === 'c') {
+    if (e.ctrlKey === true && e.shiftKey === true && e.key === 'C') {
       e.preventDefault();
       this.surroundText('`'); // code
     }
