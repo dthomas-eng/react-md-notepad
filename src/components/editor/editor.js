@@ -368,6 +368,24 @@ class PageContainer extends React.Component {
 
     this.setState({
       editorState: EditorState.push(editorState, currentContent, 'insert-characters')
+    }, () => {
+      // If nothing is selected, place cursor between the generated opening and closing tag
+      if (selectedText === '') {
+        const editorState = this.state.editorState;
+        const currentContent = editorState.getCurrentContent();
+        const selectionState = editorState.getSelection();
+        const focusKey = selectionState.getFocusKey();
+        const offset = start + ends.length;
+        const newSelectionState = selectionState.merge({
+          focusKey: focusKey,
+          focusOffset: offset,
+          anchorOffset: offset,
+        });
+        const newEditorState = EditorState.forceSelection(editorState,newSelectionState);
+        this.setState({
+          editorState: EditorState.push(newEditorState, currentContent, 'insert-characters')
+        });
+      }
     });
   };
 
