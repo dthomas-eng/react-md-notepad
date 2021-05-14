@@ -39,6 +39,8 @@ Current markdown options:
 
         <h2> Another heading
 
+These styles can be added by selecting some text and using `cmd + b`, `cmd + i`, `cmd + shift + x`, and `cmd + ctrl + c`, respectively.
+
 # Add your own styles:
 
 For inline styles, go to 

@@ -38,7 +38,7 @@ class PageContainer extends React.Component {
       blockMatchLength: Object.values(blockStyles).map((prop) => prop.length)
     });
 
-    //Add listeners for dragging over and dropping in the editor area. 
+    //Add listeners for dragging over and dropping in the editor area.
     let div = this.dropRef.current
     let editorDiv = document.getElementById('editor')
     editorDiv.addEventListener('dragover', this.handleDrag)
@@ -72,9 +72,28 @@ class PageContainer extends React.Component {
     if (e.keyCode === 32) {
       this.clearStyles()
     }
+    // Styling
+    if (e.ctrlKey === true && e.key === 'b') {
+      e.preventDefault();
+      this.surroundText('**'); // Bold
+    }
+    if (e.ctrlKey === true && e.key === 'i') {
+      e.preventDefault();
+      this.surroundText('*'); // italic
+    }
+    if (e.ctrlKey === true && e.shiftKey === true && e.key === 'X') {
+      e.preventDefault();
+      this.surroundText('~~'); // strikethrough
+    }
+    if (e.ctrlKey === true && e.shiftKey === true && e.key === 'C') {
+      e.preventDefault();
+      this.surroundText('`'); // code
+    }
   }
 
-  //This method turns a tab into 4 spaces. 
+  /** Handler Methods **/
+
+  //This method turns a tab into 4 spaces.
   handleTab = (e) => {
     e.preventDefault();
 
@@ -105,7 +124,7 @@ class PageContainer extends React.Component {
     e.preventDefault()
     e.stopPropagation()
 
-    //Only allow 1 file to be dropped. 
+    //Only allow 1 file to be dropped.
     if (e.dataTransfer.files && e.dataTransfer.files.length === 1) {
 
       //And that file must be an image. Can detect different file types and treat accordingly.
@@ -120,7 +139,7 @@ class PageContainer extends React.Component {
 
       reader.onloadend = function () {
         sendToInsertBlock(reader.result)
-        //Need to hide the textArea that shows up when you hover to drop. It's done it's job at this point. 
+        //Need to hide the textArea that shows up when you hover to drop. It's done it's job at this point.
         document.getElementById('dropzone').style.visibility = 'hidden'
       }
 
@@ -228,13 +247,13 @@ class PageContainer extends React.Component {
     //Take a snapshot of current cursor location, we are about to fuck it up.
     const preEditSelection = currentState.getSelection();
 
-    //This is the new state passed at the end into setstate. We operate on it a bunch then pass it back. 
+    //This is the new state passed at the end into setstate. We operate on it a bunch then pass it back.
     let newContentState = this.state.editorState.getCurrentContent()
 
     //We go through each block.
     for (let i = 0; i < editorContentRaw.blocks.length; i++) {
 
-      //Get the block text and define what the match pattern should be: 
+      //Get the block text and define what the match pattern should be:
       const blockText = editorContentRaw.blocks[i].text
 
       //Get initial matches:
@@ -263,7 +282,7 @@ class PageContainer extends React.Component {
             let matchStart = match.index
             let matchEnd = match.index + match[0].length
 
-            //Create a selection of the matching text. 
+            //Create a selection of the matching text.
             let selection = new SelectionState({
               anchorKey: editorContentRaw.blocks[i].key,
               anchorOffset: matchStart,
@@ -273,15 +292,15 @@ class PageContainer extends React.Component {
               isBackward: false
             });
 
-            //This just generates a new state with our selected text. 
+            //This just generates a new state with our selected text.
             newContentState = Modifier.replaceText(
               newContentState,
               selection,
               textContent
             );
 
-            //We create a second selection as this needs to have a different offset because the string is now 
-            //missing the tags. We need to account for that. 
+            //We create a second selection as this needs to have a different offset because the string is now
+            //missing the tags. We need to account for that.
             let removedTagsSelection = new SelectionState({
               anchorKey: editorContentRaw.blocks[i].key,
               anchorOffset: matchStart,
@@ -318,14 +337,13 @@ class PageContainer extends React.Component {
             //Set the style back to none. 
             return
           })
-
         })
       }
       )
     }
   }
 
-  //Reset Styles back to none. Have to set them one at a time. Really annoying thing about draftjs. 
+  //Reset Styles back to none. Have to set them one at a time. Really annoying thing about draftjs.
   clearStyles = () => {
 
     this.state.inlineStyles.forEach((style) => {
@@ -364,7 +382,7 @@ class PageContainer extends React.Component {
 
   /** Media Drag/Drop Methods **/
 
-  //Inserts a block when an image is dragged into the drag and drop zone. 
+  //Inserts a block when an image is dragged into the drag and drop zone.
   insertBlock = (source) => {
 
     const { editorState } = this.state;
@@ -392,7 +410,7 @@ class PageContainer extends React.Component {
     })
   }
 
-  //This is the method that renders each block. When we define custom blocks (like the ImageBlock below), 
+  //This is the method that renders each block. When we define custom blocks (like the ImageBlock below),
   //we can define what data goes where. In this case, we take the data from the contentstate (which is the imgsrc)
   //and put it into the props of the custom ImageBlock.
   //Could detect type of media (pdf, audio, video, ect...) and apply the same routine displaying them however we want.
@@ -401,7 +419,7 @@ class PageContainer extends React.Component {
 
     if (type === "atomic") {
 
-      //get the data from that block: 
+      //get the data from that block:
       const { editorState } = this.state;
       const contentState = editorState.getCurrentContent();
       const data = contentState.getEntity(contentBlock.getEntityAt(0)).getData();
@@ -416,15 +434,53 @@ class PageContainer extends React.Component {
     }
   };
 
-  //The actual definition of the custom block. 
-  ImageBlock = props => {
-    return (
-      <div id={'imageLoc'}>
-        <img src={props.blockProps.imgsrc} id={'imageBlock'} className="image-block" />
-      </div>
-    );
-  };
+    //The actual definition of the custom block.
+    ImageBlock = props => {
+      return (
+        <div id={'imageLoc'}>
+          <img src={props.blockProps.imgsrc} id={'imageBlock'} className="image-block" />
+        </div>
+      );
+    };
 
+  surroundText = (ends) => {
+    const editorState = this.state.editorState;
+    // get selection
+    let selectionState = editorState.getSelection();
+    const anchorKey = selectionState.getAnchorKey();
+    let currentContent = editorState.getCurrentContent();
+    const currentContentBlock = currentContent.getBlockForKey(anchorKey);
+    const start = selectionState.getStartOffset();
+    const end = selectionState.getEndOffset();
+    const selectedText = currentContentBlock.getText().slice(start, end);
+    currentContent = Modifier.replaceText(
+      currentContent,
+      selectionState,
+      `${ends}${selectedText}${ends}`
+    );
+
+    this.setState({
+      editorState: EditorState.push(editorState, currentContent, 'insert-characters')
+    }, () => {
+      // If nothing is selected, place cursor between the generated opening and closing tag
+      if (selectedText === '') {
+        const editorState = this.state.editorState;
+        const currentContent = editorState.getCurrentContent();
+        const selectionState = editorState.getSelection();
+        const focusKey = selectionState.getFocusKey();
+        const offset = start + ends.length;
+        const newSelectionState = selectionState.merge({
+          focusKey: focusKey,
+          focusOffset: offset,
+          anchorOffset: offset,
+        });
+        const newEditorState = EditorState.forceSelection(editorState,newSelectionState);
+        this.setState({
+          editorState: EditorState.push(newEditorState, currentContent, 'insert-characters')
+        });
+      }
+    });
+  };
 
   render() {
     return (
