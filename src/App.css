@@ -96,3 +96,20 @@ Body {
 *::-webkit-scrollbar-thumb {
   background-color: gray;
 }
+
+  /* block stylings  */
+  /* define the regex matches for these in blockStyles.js */
+
+  .veryGross {
+    background-color: #ff26f9;
+    font-weight: bolder;
+    padding: 20px;
+    font-size: larger;
+  }
+
+  .superGross {
+    background-color: #0012af;
+    font-weight: bolder;
+    padding: 20px;
+    font-size: larger;
+  }
