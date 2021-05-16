@@ -8,8 +8,6 @@ Body {
   width: 100%;
 }
 
-.container {}
-
 /* DraftJS */
 
 .public-DraftEditor-content {
@@ -21,7 +19,7 @@ Body {
 }
 
 .public-DraftStyleDefault-ltr {
-  text-align: left 
+  text-align: left
 }
 
 /* Editor */

@@ -12,7 +12,6 @@ import Editor from "draft-js-plugins-editor";
 import styleMap from "./styleMap"
 import blockStyles from "./blockStyles"
 
-
 class PageContainer extends React.Component {
 
   //Inherits Component class and creates and empty state for our editor.
@@ -25,17 +24,28 @@ class PageContainer extends React.Component {
       blockMatchStrings: [],
       blockStyles: [],
       blockMatchLength: [],
-      preEditSelection: null
+      preEditSelection: null,
+      FLAGS: {}
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
+
+    //Gets the flags object from flaginator-9000.
+    let FLAGS
+    const response = await fetch('https://dev.dthomas.io/fasteners/public/60a192c29663f02219720e2a');
+    const flaginatorResponse = await response.json();
+    if (flaginatorResponse.success === true) {
+      FLAGS = flaginatorResponse.flags.reduce((o, curr) => ({ ...o, [curr.name]: curr.enable }), {})
+    }
+
     this.setState({
       inlineMatchStrings: Object.values(styleMap).map((prop) => prop.regEx),
       inlineStyles: Object.keys(styleMap).map((prop) => prop),
       blockMatchStrings: Object.values(blockStyles).map((prop) => prop.regEx),
       blockStyles: Object.keys(blockStyles).map((prop) => prop),
-      blockMatchLength: Object.values(blockStyles).map((prop) => prop.length)
+      blockMatchLength: Object.values(blockStyles).map((prop) => prop.length),
+      FLAGS
     });
 
     //Add listeners for dragging over and dropping in the editor area.
@@ -72,22 +82,26 @@ class PageContainer extends React.Component {
     if (e.keyCode === 32) {
       this.clearStyles()
     }
-    // Styling
-    if (e.ctrlKey === true && e.key === 'b') {
-      e.preventDefault();
-      this.surroundText('**'); // Bold
-    }
-    if (e.ctrlKey === true && e.key === 'i') {
-      e.preventDefault();
-      this.surroundText('*'); // italic
-    }
-    if (e.ctrlKey === true && e.shiftKey === true && e.key === 'X') {
-      e.preventDefault();
-      this.surroundText('~~'); // strikethrough
-    }
-    if (e.ctrlKey === true && e.shiftKey === true && e.key === 'C') {
-      e.preventDefault();
-      this.surroundText('`'); // code
+
+    if (this.state.FLAGS.keyStyling === true) {
+
+      // Styling
+      if (e.ctrlKey === true && e.key === 'b') {
+        e.preventDefault();
+        this.surroundText('**'); // Bold
+      }
+      if (e.ctrlKey === true && e.key === 'i') {
+        e.preventDefault();
+        this.surroundText('*'); // italic
+      }
+      if (e.ctrlKey === true && e.shiftKey === true && e.key === 'X') {
+        e.preventDefault();
+        this.surroundText('~~'); // strikethrough
+      }
+      if (e.ctrlKey === true && e.shiftKey === true && e.key === 'C') {
+        e.preventDefault();
+        this.surroundText('`'); // code
+      }
     }
   }
 
@@ -434,14 +448,14 @@ class PageContainer extends React.Component {
     }
   };
 
-    //The actual definition of the custom block.
-    ImageBlock = props => {
-      return (
-        <div id={'imageLoc'}>
-          <img src={props.blockProps.imgsrc} id={'imageBlock'} className="image-block" />
-        </div>
-      );
-    };
+  //The actual definition of the custom block.
+  ImageBlock = props => {
+    return (
+      <div id={'imageLoc'}>
+        <img src={props.blockProps.imgsrc} id={'imageBlock'} className="image-block" />
+      </div>
+    );
+  };
 
   surroundText = (ends) => {
     const editorState = this.state.editorState;
@@ -474,7 +488,7 @@ class PageContainer extends React.Component {
           focusOffset: offset,
           anchorOffset: offset,
         });
-        const newEditorState = EditorState.forceSelection(editorState,newSelectionState);
+        const newEditorState = EditorState.forceSelection(editorState, newSelectionState);
         this.setState({
           editorState: EditorState.push(newEditorState, currentContent, 'insert-characters')
         });
